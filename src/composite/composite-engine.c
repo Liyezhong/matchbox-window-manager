@@ -19,6 +19,7 @@
  */
 
 #include "composite-engine.h"
+#include "timeline.h"
 
 #define DO_TIMINGS 0 		/* enable this for lowlight timings */
 
@@ -31,6 +32,9 @@
 #ifdef USE_COMPOSITE
 
 #include <math.h>
+
+static XserverRegion
+client_win_extents (Wm *w, Client *client);
 
 static void
 comp_engine_add_damage (Wm *w, XserverRegion damage);
@@ -52,6 +56,37 @@ typedef struct StackItem
 
 static conv      *gussianMap;
 static StackItem *comp_stack; 
+
+static Bool
+timeline_test_func (Wm   *w, 
+		    int   frames_total, 
+		    int   frame_num, 
+		    void *userdata)
+{
+  Client *client = (Client *)userdata;
+  XserverRegion   region;
+  XRenderColor    c;
+
+  client->transparency = (frame_num * 0xffff) / frames_total;
+
+  dbg("Frame: %i/%i, trans: %i\n", 
+      frame_num, frames_total, client->transparency);
+
+  c.red = c.green = c.blue = 0;
+  c.alpha = client->transparency; 
+
+  XRenderFillRectangle (w->dpy, PictOpSrc, w->trans_picture, &c, 0, 0, 1, 1);
+
+  if (client->damage != None)
+    XDamageDestroy (w->dpy, client->damage);
+
+  client->damage = XDamageCreate (w->dpy, client->frame, 
+				  XDamageReportNonEmpty);
+  region = client_win_extents (w, client);
+  comp_engine_add_damage (w, region);
+
+  return True;
+}
 
 /* List for stack rendering of dialogs etc */
 
@@ -748,6 +783,7 @@ comp_engine_init (Wm *w)
   int		                damage_error;
   int		                xfixes_event, xfixes_error;
   int		                render_event, render_error;
+  int		                composite_major, composite_minor;
   XRenderPictureAttributes	pa;
   Pixmap                        tmp_pxm;
 
@@ -771,6 +807,17 @@ comp_engine_init (Wm *w)
       w->have_comp_engine = False;
       return False;
     }
+
+    XCompositeQueryVersion (w->dpy, &composite_major, &composite_minor);
+
+    if (composite_major == 0 && composite_minor < 2)
+      {
+	/* Need at least version 0.2 for named pixmaps */
+	fprintf (stderr, 
+		 "matchbox: Composite extension too old (need >=0.2)\n");
+	w->have_comp_engine = False;
+	return False;
+      }
   
   if (!XDamageQueryExtension (w->dpy, &w->damage_event, &damage_error))
     {
@@ -788,6 +835,8 @@ comp_engine_init (Wm *w)
   
   w->have_comp_engine     = True;
   w->comp_engine_disabled = False;
+
+  wm_set_timelines_fps (w, 60); 
 
   comp_stack = NULL;
 
@@ -853,7 +902,6 @@ comp_engine_client_init(Wm *w, Client *client)
     }
 
   comp_engine_client_get_trans_prop(w, client);
-
 }
 
 int
@@ -897,12 +945,27 @@ comp_engine_client_show(Wm *w, Client *client)
     {
       pa.subwindow_mode = IncludeInferiors;
 
-      client->picture = XRenderCreatePicture (w->dpy, 
-					      client->frame,
-					      XRenderFindVisualFormat (w->dpy, 
-								       client->visual),
-					      CPSubwindowMode,
-					      &pa);
+      if (client->named_pixmap == None)
+	client->named_pixmap 
+	  = XCompositeNameWindowPixmap (w->dpy, client->frame);
+
+      client->picture 
+	= XRenderCreatePicture (w->dpy, 
+				client->named_pixmap,
+				XRenderFindVisualFormat (w->dpy, 
+							 client->visual),
+				CPSubwindowMode,
+				&pa);
+
+      if (client->type == MBCLIENT_TYPE_DIALOG)
+	{
+	  MBTimeline *timeline;
+	  timeline = mb_timeline_new (5,  
+				      timeline_test_func, 
+				      (void *)client);
+	  mb_timeline_start (w, timeline);
+	  return; 		/* timeline will add damage */
+	}
     }
 
   if (client->damage != None)
@@ -950,14 +1013,18 @@ comp_engine_client_hide(Wm *w, Client *client)
       comp_engine_add_damage (w, client->extents); 
       client->extents = None;
     }
-
-
-  if (client->picture)
+  
+  if (client->named_pixmap)	
     {
-      XRenderFreePicture (w->dpy, client->picture);
-      client->picture = None;
+      XFreePixmap (w->dpy, client->named_pixmap);
+      client->named_pixmap = None;
+      
+      if (client->picture)
+	{
+	  XRenderFreePicture (w->dpy, client->picture);
+	  client->picture = None;
+	}
     }
-
 }
 
 void
@@ -968,6 +1035,9 @@ comp_engine_client_destroy(Wm *w, Client *client)
   dbg("%s() called\n", __func__);
 
   comp_engine_client_hide(w, client);
+
+ if (client->named_pixmap)	
+   XFreePixmap (w->dpy, client->named_pixmap);
 
   if (client->picture)
     XRenderFreePicture (w->dpy, client->picture);
@@ -1026,10 +1096,16 @@ comp_engine_client_configure(Wm *w, Client *client)
 
   XserverRegion   extents = client_win_extents(w, client);
 
-  if (client->picture != None)
+  if (client->named_pixmap)	
     {
-      XRenderFreePicture (w->dpy, client->picture);
-      client->picture = None;
+      XFreePixmap (w->dpy, client->named_pixmap);
+      client->named_pixmap = None;
+      
+      if (client->picture)
+	{
+	  XRenderFreePicture (w->dpy, client->picture);
+	  client->picture = None;
+	}
     }
 
   damage = XFixesCreateRegion (w->dpy, 0, 0);

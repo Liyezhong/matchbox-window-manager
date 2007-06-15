@@ -884,6 +884,11 @@ wm_event_loop(Wm* w)
 
       tvt.tv_usec = 0;
       tvt.tv_sec  = 0;
+#ifdef USE_COMPOSITE
+      if (w->timelines)
+	tvt.tv_usec = w->timeline_interval_msecs;
+      /* FIXME: need to handle below */
+#endif
 
 #ifdef USE_LIBSN
       if (w->sn_busy_cnt)
@@ -964,7 +969,7 @@ wm_event_loop(Wm* w)
 #endif
 
       } else {
-
+#if 0
 	/* No X event poll checks here */
 #ifdef USE_LIBSN
 	if (w->sn_busy_cnt)
@@ -985,7 +990,13 @@ wm_event_loop(Wm* w)
 	    ewmh_hung_app_check(w);
 	  }
 #endif
+#endif
+#ifdef USE_COMPOSITE
+	if (w->timelines)
+	  wm_run_timelines (w);
+#endif
          }
+
 
 #ifdef USE_COMPOSITE
       if (w->all_damage)

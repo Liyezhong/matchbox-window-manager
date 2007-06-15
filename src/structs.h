@@ -337,7 +337,10 @@ typedef struct _client
   Picture	    picture;
   XserverRegion	    extents;
   XserverRegion	    border_clip;
+  Pixmap            named_pixmap;
   int               transparency;
+  int               offset_x, offset_y;
+
 
   /* Below togo ? */
 
@@ -664,6 +667,10 @@ typedef struct _wm
 
   MBPixbuf         *argb_pb; 	/* special 32 bpp pixbuf ref */
 
+  /* Timelines */
+
+  MBList           *timelines;
+  long              timeline_interval_msecs;
 #endif
 
 #ifdef USE_XSYNC
@@ -763,6 +770,24 @@ enum {
   FRAME_MSG_WEST,
   FRAME_MSG_SOUTH,
   N_FRAME_TYPES
+};
+
+/* Experimental Timelines */
+
+typedef struct MBTimeline MBTimeline;
+
+typedef Bool (*MBTimelineFunc) (Wm   *wm, 
+				int   frames_total, 
+				int   frame_num, 
+				void *userdata);
+
+struct MBTimeline
+{
+  MBTimelineFunc func;
+  void         *func_data;
+  int           n_frames;
+  int           frame_num;
+  long          Last_called_msecs;
 };
 
 #endif

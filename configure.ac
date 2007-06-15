@@ -483,12 +483,13 @@ AC_TYPE_PID_T
 AC_FUNC_FORK
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([strchr strdup strsep])
-
+AC_PROG_LIBTOOL
 # FIXME: install mbsession ?
 
 AC_OUTPUT([
 Makefile
 src/Makefile  
+src/composite/Makefile  
 data/Makefile
 data/themes/Makefile
 data/themes/Default/Makefile
@@ -496,10 +497,6 @@ data/themes/blondie/Makefile
 data/themes/MBOpus/Makefile
 data/schemas/Makefile
 ])
-
-#
-#util/Makefile 
-#themes/Makefile
 
 
 dnl ==========================================================================

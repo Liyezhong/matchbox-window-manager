@@ -1,3 +1,22 @@
+2007-06-15  Matthew Allum  <mallum@openedhand.com>
+
+	* configure.ac:
+	* src/Makefile.am:
+	* src/composite-engine.c:
+	* src/composite-engine.h:
+	* src/composite/Makefile.am:
+	* src/composite/composite-engine.c:
+	* src/composite/timeline.c:
+	* src/composite/timeline.h:
+	* src/structs.h:
+	* src/wm.c: 
+	Update to require newer composite libs
+	Use named pixmaps.
+	Addition of rough (broken) timeline code with prototype code
+	for window fade ins. 
+
+===================== Branch Point ===============================
+
 2007-05-25  Matthew Allum  <mallum@openedhand.com>
 
 	* src/client_common.c: (client_button_do_ops):
