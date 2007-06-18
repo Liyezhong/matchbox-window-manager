@@ -1,3 +1,10 @@
+2007-06-18  Matthew Allum  <mallum@openedhand.com>
+
+	* src/composite/composite-engine.c:
+	* src/composite/timeline.c:
+	* src/structs.h:
+	Fixups so dialogs/overrides fade in with basic timelines
+
 2007-06-15  Matthew Allum  <mallum@openedhand.com>
 
 	* configure.ac:

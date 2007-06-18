@@ -65,19 +65,16 @@ wm_run_timelines (Wm *wm)
 
       tl->frame_num += n_frames;
 
-      if (tl->frame_num >= tl->n_frames)
-	tl->frame_num = tl->n_frames-1;
-
-      if (tl->func && tl->func (wm, tl->n_frames,  
-				tl->frame_num, 
-				tl->func_data ) == False)
+      if (tl->frame_num > tl->n_frames)
 	{
-	  /* Effectively stop */
-	  mb_timeline_stop (wm, tl);
+	  dbg("%s() Timeline should be stopped!", __func__);
+	  return;
 	}
 
-      if (tl->frame_num == tl->n_frames-1) /* loops? */
-	  mb_timeline_stop (wm, tl);
+      if (tl->func)
+	tl->func (wm, tl->n_frames,  tl->frame_num, tl->func_data);
+
+      /* Dont touch tl anymore as callback may have remove it */
 
       item = next;
     }
@@ -109,5 +106,12 @@ void
 mb_timeline_start (Wm *wm, MBTimeline *timeline)
 {
   list_add(&wm->timelines, NULL, 0, (void *)timeline);
+
+  timeline->frame_num = 1;
+
+  if (timeline->func)
+    timeline->func (wm, timeline->n_frames, 
+	      timeline->frame_num, timeline->func_data);
+
 }
 

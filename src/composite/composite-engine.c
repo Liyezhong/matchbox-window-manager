@@ -85,6 +85,14 @@ timeline_test_func (Wm   *w,
   region = client_win_extents (w, client);
   comp_engine_add_damage (w, region);
 
+  /* Stop the timeline */
+  if (frame_num >= frames_total)
+    {
+      mb_timeline_stop (w, client->timeline);
+      free (client->timeline);
+      client->timeline = NULL;
+    }
+
   return True;
 }
 
@@ -957,13 +965,14 @@ comp_engine_client_show(Wm *w, Client *client)
 				CPSubwindowMode,
 				&pa);
 
-      if (client->type == MBCLIENT_TYPE_DIALOG)
+      if ((client->type == MBCLIENT_TYPE_DIALOG 
+	  || client->type == MBCLIENT_TYPE_OVERRIDE)
+	  && client->timeline == NULL)
 	{
-	  MBTimeline *timeline;
-	  timeline = mb_timeline_new (5,  
-				      timeline_test_func, 
-				      (void *)client);
-	  mb_timeline_start (w, timeline);
+	  client->timeline = mb_timeline_new (5,  
+					      timeline_test_func, 
+					      (void *)client);
+	  mb_timeline_start (w, client->timeline);
 	  return; 		/* timeline will add damage */
 	}
     }
@@ -1001,6 +1010,12 @@ comp_engine_client_hide(Wm *w, Client *client)
       comp_engine_add_damage (w, t->extents); 
     }
 
+  if (client->timeline)
+    {
+      mb_timeline_stop (w, client->timeline);
+      free (client->timeline);
+      client->timeline = NULL;
+    }
 
   if (client->damage != None)
     {

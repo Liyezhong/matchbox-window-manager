@@ -310,6 +310,8 @@ typedef struct _mb_client_button
 #define CLIENT_TB_ALT_TRANS_FOR_APP    (1<<29)
 #endif
 
+typedef struct MBTimeline MBTimeline;
+
 /* Main Client structure */
 
 typedef struct _client
@@ -340,7 +342,7 @@ typedef struct _client
   Pixmap            named_pixmap;
   int               transparency;
   int               offset_x, offset_y;
-
+  MBTimeline       *timeline;
 
   /* Below togo ? */
 
@@ -773,8 +775,6 @@ enum {
 };
 
 /* Experimental Timelines */
-
-typedef struct MBTimeline MBTimeline;
 
 typedef Bool (*MBTimelineFunc) (Wm   *wm, 
 				int   frames_total, 
