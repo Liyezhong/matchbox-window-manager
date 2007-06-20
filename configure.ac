@@ -245,7 +245,7 @@ dnl ------ Composite -------------------------------------------------------
 
 if test x$enable_composite != xno; then
   PKG_CHECK_MODULES(COMPO, xcomposite xfixes xdamage xrender, ,
-			   AC_MSG_ERROR([*** Required Composite Librays not installed ***]))
+			   AC_MSG_ERROR([*** Required Composite Libraries not installed ***]))
 
   AC_DEFINE(USE_COMPOSITE, [1], [use bleeding enge composite code])
 

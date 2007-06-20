@@ -69,6 +69,9 @@ timeline_test_func (Wm   *w,
 
   client->transparency = (frame_num * 0xffff) / frames_total;
 
+  if (client->transparency == 0xffff)
+    client->transparency = -1;
+
   dbg("Frame: %i/%i, trans: %i\n", 
       frame_num, frames_total, client->transparency);
 
@@ -1425,7 +1428,6 @@ comp_engine_render(Wm *w, XserverRegion region)
 					width  + w->config->shadow_padding_width, 
 					height + w->config->shadow_padding_height);
 		    }
-
 		  /* Paint any transparent window contents */
 		  if (t->transparency != -1 || t->is_argb32 )
 		    {
@@ -1450,7 +1452,6 @@ comp_engine_render(Wm *w, XserverRegion region)
 					  w->root_buffer, 0, 0, 0, 0, 
 					  x, y, width, height);
 		    }
-
 		  XFixesDestroyRegion (w->dpy, shadow_region);
 		}
 	      else 		/* GAUSSIAN */

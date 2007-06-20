@@ -1,3 +1,11 @@
+2007-06-20  Matthew Allum  <mallum@openedhand.com>
+
+	* configure.ac:
+	Fix a typo.
+	* src/composite/composite-engine.c:
+	Unset transparency when full opacity is reached. 
+	Speeds things up and avoids some odd artifacts. 
+
 2007-06-18  Matthew Allum  <mallum@openedhand.com>
 
 	* src/composite/composite-engine.c:
