@@ -1,3 +1,12 @@
+2007-06-22  Matthew Allum  <mallum@openedhand.com>
+
+	* src/composite/composite-engine.c:
+	* src/composite/timeline.c: 
+	Drop timeline frames if animation cant keep up. 
+	Safer removal of timelines for closed clients.
+	* src/dialog_client.c:
+	Experiment with translucent static dialogs.
+
 2007-06-20  Matthew Allum  <mallum@openedhand.com>
 
 	* configure.ac:

@@ -43,38 +43,38 @@ wm_run_timelines (Wm *wm)
       int         n_frames = 1;
 
       next = item->next;
-#if 0
-      /* FIXME: Calculate dropped frames.. */
-      if (tl->Last_called_msecs != 0)
+
+      if (tl->frame_num > tl->n_frames)
+	dbg("%s() Timeline should be stopped!", __func__);
+
+      if (tl->Last_called_msecs)
 	{
-	  printf("%li vs %li    %li\n",
-		 tv.tv_usec,
-		 tl->Last_called_msecs,
-		 wm->timeline_interval_msecs);
-
-	  n_frames = (tv.tv_usec - tl->Last_called_msecs) 
-	                   / wm->timeline_interval_msecs; 
-
-	  if (!n_frames)
-	    n_frames = 1;
+	  dbg("%s() %li , %li, %li %li\n", __func__, 
+	      (tv.tv_usec - tl->Last_called_msecs),
+	      tv.tv_usec,
+	      tl->Last_called_msecs,
+	      wm->timeline_interval_msecs);
+		 
+	  if ((tv.tv_usec - tl->Last_called_msecs) 
+	                         > wm->timeline_interval_msecs)
+	    n_frames = (tv.tv_usec - tl->Last_called_msecs) 
+       	                    / wm->timeline_interval_msecs;
 	}
-#endif
-      printf("advance %i frames\n", n_frames);
+
+
+      dbg("%s() advance %i frames\n", __func__,n_frames);
 
       tl->Last_called_msecs = tv.tv_usec;
 
       tl->frame_num += n_frames;
 
       if (tl->frame_num > tl->n_frames)
-	{
-	  dbg("%s() Timeline should be stopped!", __func__);
-	  return;
-	}
+	tl->n_frames = tl->frame_num;
 
       if (tl->func)
 	tl->func (wm, tl->n_frames,  tl->frame_num, tl->func_data);
 
-      /* Dont touch tl anymore as callback may have remove it */
+      /* Dont touch timeline anymore as callback may have removed it */
 
       item = next;
     }

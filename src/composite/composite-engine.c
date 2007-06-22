@@ -88,7 +88,7 @@ timeline_test_func (Wm   *w,
   region = client_win_extents (w, client);
   comp_engine_add_damage (w, region);
 
-  /* Stop the timeline */
+  /* Stop the timeline (and remove) */
   if (frame_num >= frames_total)
     {
       mb_timeline_stop (w, client->timeline);
@@ -100,7 +100,6 @@ timeline_test_func (Wm   *w,
 }
 
 /* List for stack rendering of dialogs etc */
-
 
 /* Shadow Generation */
 
@@ -1013,13 +1012,6 @@ comp_engine_client_hide(Wm *w, Client *client)
       comp_engine_add_damage (w, t->extents); 
     }
 
-  if (client->timeline)
-    {
-      mb_timeline_stop (w, client->timeline);
-      free (client->timeline);
-      client->timeline = NULL;
-    }
-
   if (client->damage != None)
     {
       XDamageDestroy (w->dpy, client->damage);
@@ -1053,6 +1045,13 @@ comp_engine_client_destroy(Wm *w, Client *client)
   dbg("%s() called\n", __func__);
 
   comp_engine_client_hide(w, client);
+
+  if (client->timeline)
+    {
+      mb_timeline_stop (w, client->timeline);
+      free (client->timeline);
+      client->timeline = NULL;
+    }
 
  if (client->named_pixmap)	
    XFreePixmap (w->dpy, client->named_pixmap);

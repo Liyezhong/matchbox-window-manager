@@ -1047,7 +1047,10 @@ dialog_client_button_press(Client *c, XButtonEvent *e)
 	    
 	    if (e->window != c->frames_decor[NORTH])
 	      return;
-	    
+#ifdef USE_COMPOSITE
+
+
+#else	    
 	    XUnmapWindow(w->dpy, c->frame);
 
 	    dialog_client_drag(c);
@@ -1063,6 +1066,7 @@ dialog_client_button_press(Client *c, XButtonEvent *e)
 	    misc_untrap_xerrors(); 	    
 
 	    XSync(w->dpy, False);
+#endif
 	    return;
 	  }
 
