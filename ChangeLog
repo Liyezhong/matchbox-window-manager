@@ -1,3 +1,13 @@
+2007-06-29  Matthew Allum  <mallum@openedhand.com>
+
+	* src/composite/timeline.c: (wm_run_timelines):
+	Always make sure the last frame is played.
+
+	* src/composite/composite-engine.c: (_render_a_client):
+	* src/wm.c: (wm_usage), (wm_load_config):
+	Make it possible to switch off lowlighting for composite
+	from the command line (on by default)
+
 2007-06-22  Matthew Allum  <mallum@openedhand.com>
 
 	* src/composite/composite-engine.c:

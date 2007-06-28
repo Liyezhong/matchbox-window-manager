@@ -1206,37 +1206,40 @@ _render_a_client(Wm           *w,
 
     }
 
-  /* Render lowlight dialog modal for app */
-  if (lowlight_type == 1
-      && (client->type & (MBCLIENT_TYPE_APP|MBCLIENT_TYPE_DESKTOP)))
+  if (w->config->dialog_shade)
     {
-      int title_offset = 0;
-
-      dbg("%s() rendering lowlight\n", __func__);
-
-      if (client->type == MBCLIENT_TYPE_APP) 
-	title_offset = main_client_title_height(client);
+      /* Render lowlight dialog modal for app */
+      if (lowlight_type == 1
+	  && (client->type & (MBCLIENT_TYPE_APP|MBCLIENT_TYPE_DESKTOP)))
+	{
+	  int title_offset = 0;
+	  
+	  dbg("%s() rendering lowlight\n", __func__);
+	  
+	  if (client->type == MBCLIENT_TYPE_APP) 
+	    title_offset = main_client_title_height(client);
 	  
 	  XRenderComposite (w->dpy, PictOpOver, w->lowlight_picture, None, 
 			    w->root_buffer,
 			    0, 0, 0, 0, x, y + title_offset,
 			    width, height - title_offset);
-
+	  
+	}
+      
+      /* Render lowlight dialog modal for root - e.g lowlight everything */
+      if (lowlight_type == 2 && client->win_modal_blocker == None)
+	XRenderComposite (w->dpy, PictOpOver, w->lowlight_picture, None, 
+			  w->root_buffer,
+			  0, 0, 0, 0, x, y,
+			  width, height);
     }
 
-  /* Render lowlight dialog modal for root - e.g lowlight everything */
-  if (lowlight_type == 2 && client->win_modal_blocker == None)
-    XRenderComposite (w->dpy, PictOpOver, w->lowlight_picture, None, 
-		      w->root_buffer,
-		      0, 0, 0, 0, x, y,
-		      width, height);
-	
   if (client->border_clip != None)
     {
       XFixesDestroyRegion (w->dpy, client->border_clip);
       client->border_clip = None;
     }
-
+  
   client->border_clip = XFixesCreateRegion (w->dpy, 0, 0);
   XFixesCopyRegion (w->dpy, client->border_clip, region);
 

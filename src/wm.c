@@ -189,9 +189,7 @@ wm_usage(char *progname)
    printf("\t-theme            <string> \n");
    printf("\t-use_titlebar     <yes|no>\n");
    printf("\t-use_cursor       <yes|no>\n");
-#ifndef USE_COMPOSITE
    printf("\t-use_lowlight     <yes|no>\n");
-#endif
    printf("\t-use_dialog_mode  <free|static|const-horiz>\n");
    printf("\t-use_desktop_mode <decorated|plain>\n");
    printf("\t-use_super_modal  <yes|no>\n");
@@ -323,9 +321,7 @@ wm_load_config (Wm   *w,
    w->config->ping_handler     = getenv("MB_HUNG_APP_HANDLER");
    w->config->ping_aggressive = getenv("MB_AGGRESSIVE_PING") ? True : False;
 
-#ifdef USE_COMPOSITE
-   w->config->dialog_shade = True;
-#endif
+   w->config->dialog_shade = False;
    w->config->lowlight_params[0] = 0;
    w->config->lowlight_params[1] = 0;
    w->config->lowlight_params[2] = 0;
@@ -366,15 +362,13 @@ wm_load_config (Wm   *w,
             w->config->no_cursor = True;
          continue;
       }
-#ifndef USE_COMPOSITE
       if (!strcmp ("-use_lowlight", argv[i])) 
 	{
 	  if (++i>=*argc) wm_usage (argv[0]);
-	  if (strcmp(argv[i], "yes") == 0)
-            w->config->dialog_shade = True;   
+	  if (strcmp(argv[i], "no") == 0)
+            w->config->dialog_shade = False;   
 	  continue;
 	}
-#endif
       if (!strcmp ("-use_super_modal", argv[i])) 
 	{
 	  if (++i>=*argc) wm_usage (argv[0]);
@@ -606,13 +600,11 @@ wm_load_config (Wm   *w,
    /* 
     *  Composite matchbox always uses lowlighting 
     */
-#ifndef USE_COMPOSITE
    if (XrmGetResource (rDB, "matchbox.lowlight", "Matchbox.Lowlight",
 		       &type, &value) == True)
      {
        if (strncmp (value.addr, "yes", (int) value.size) == 0)
 	 {
-#endif
 	   dbg("%s() TURNING LOWLIGHT ON\n", __func__);
 	   w->config->dialog_shade = True;   
 
@@ -621,10 +613,8 @@ wm_load_config (Wm   *w,
 	   w->config->lowlight_params[1] = 0; 
 	   w->config->lowlight_params[2] = 0; 
 	   w->config->lowlight_params[3] = 100; 
-#ifndef USE_COMPOSITE
      	 }
      }
-#endif
 
    if (XrmGetResource (rDB, "matchbox.dialog", "Matchbox.Dialog",
 		       &type, &value) == True)

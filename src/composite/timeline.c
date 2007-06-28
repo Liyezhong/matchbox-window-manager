@@ -69,7 +69,7 @@ wm_run_timelines (Wm *wm)
       tl->frame_num += n_frames;
 
       if (tl->frame_num > tl->n_frames)
-	tl->n_frames = tl->frame_num;
+	tl->frame_num = tl->n_frames;
 
       if (tl->func)
 	tl->func (wm, tl->n_frames,  tl->frame_num, tl->func_data);
