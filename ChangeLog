@@ -1,3 +1,12 @@
+2007-07-30  Matthew Allum  <mallum@openedhand.com>
+
+	* src/composite/composite-engine.c:
+	Misc cleanups
+	* src/dialog_client.c:
+	Fixes for making static dialogs transparent when clicked.
+	* src/wm.c:
+	Hopeful fixes for displaying resized input wins
+
 2007-06-29  Matthew Allum  <mallum@openedhand.com>
 
 	* src/composite/timeline.c: (wm_run_timelines):

@@ -1553,11 +1553,17 @@ wm_handle_configure_request (Wm *w, XConfigureRequestEvent *e )
 		 c->y      += diff;
 		 toolbar_client_move_resize(c);
 
+		 comp_engine_client_configure(w, c);
+		 comp_engine_client_show(w, c);
+
 		 if (trans_client)
 		   {
 		     trans_client->height += diff;
 		     trans_client->move_resize(trans_client);
 		     trans_client->redraw(trans_client, False);
+
+		     comp_engine_client_configure(w, trans_client);
+		     comp_engine_client_show(w, trans_client);
 		   }
 	       }
 	     return;

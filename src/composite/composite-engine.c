@@ -283,7 +283,8 @@ shadow_setup (Wm *w)
   
   for (y = 0; y < pheight; y++)
     {
-      d = sum_gaussian (gussianMap, opacity, center, y - center, WIDTH, HEIGHT);
+      d = sum_gaussian (gussianMap, opacity, 
+			center, y - center, WIDTH, HEIGHT);
       for (x = 0; x < pwidth; x++)
 	data[y * pwidth + x] = d;
     }
@@ -297,7 +298,8 @@ shadow_setup (Wm *w)
 
   for (y = 0; y < pheight; y++)
     {
-      d = sum_gaussian (gussianMap, opacity, center, y - center, WIDTH, HEIGHT);
+      d = sum_gaussian (gussianMap, opacity, 
+			center, y - center, WIDTH, HEIGHT);
       for (x = 0; x < pwidth; x++)
 	data[(pheight - y - 1) * pwidth + x] = d;
     }
@@ -313,7 +315,8 @@ shadow_setup (Wm *w)
 
   for (x = 0; x < pwidth; x++)
     {
-      d = sum_gaussian (gussianMap, opacity, x - center, center, WIDTH, HEIGHT);
+      d = sum_gaussian (gussianMap, opacity, 
+			x - center, center, WIDTH, HEIGHT);
       for (y = 0; y < pheight; y++)
 	data[y * pwidth + (pwidth - x - 1)] = d;
     }
@@ -326,7 +329,8 @@ shadow_setup (Wm *w)
 
   for (x = 0; x < pwidth; x++)
     {
-      d = sum_gaussian (gussianMap, opacity, x - center, center, WIDTH, HEIGHT);
+      d = sum_gaussian (gussianMap, opacity, 
+			x - center, center, WIDTH, HEIGHT);
       for (y = 0; y < pheight; y++)
 	data[y * pwidth + x] = d;
     }
@@ -343,7 +347,8 @@ shadow_setup (Wm *w)
   for (x = 0; x < pwidth; x++)
     for (y = 0; y < pheight; y++)
       {
-	d = sum_gaussian (gussianMap, opacity, x - center, y - center, WIDTH, HEIGHT);
+	d = sum_gaussian (gussianMap, opacity, 
+			  x - center, y - center, WIDTH, HEIGHT);
 	
 	data[y * pwidth + x] = d;
       }
@@ -357,7 +362,8 @@ shadow_setup (Wm *w)
   for (x = 0; x < pwidth; x++)
     for (y = 0; y < pheight; y++)
       {
-	d = sum_gaussian (gussianMap, opacity, x - center, y - center, WIDTH, HEIGHT);
+	d = sum_gaussian (gussianMap, opacity, 
+			  x - center, y - center, WIDTH, HEIGHT);
 	
 	data[(pheight - y - 1) * pwidth + x] = d;
       }
@@ -371,7 +377,8 @@ shadow_setup (Wm *w)
   for (x = 0; x < pwidth; x++)
     for (y = 0; y < pheight; y++)
       {
-	d = sum_gaussian (gussianMap, opacity, x - center, y - center, WIDTH, HEIGHT);
+	d = sum_gaussian (gussianMap, opacity, 
+			  x - center, y - center, WIDTH, HEIGHT);
 	
 	data[(pheight - y - 1) * pwidth + (pwidth - x -1)] = d;
       }
@@ -385,7 +392,8 @@ shadow_setup (Wm *w)
   for (x = 0; x < pwidth; x++)
     for (y = 0; y < pheight; y++)
       {
-	d = sum_gaussian (gussianMap, opacity, x - center, y - center, WIDTH, HEIGHT);
+	d = sum_gaussian (gussianMap, opacity, 
+			  x - center, y - center, WIDTH, HEIGHT);
 	
 	data[y * pwidth + (pwidth - x -1)] = d;
       }
@@ -548,7 +556,9 @@ static XserverRegion
 client_border_size (Wm *w, Client *c, int x, int y)
 {
     XserverRegion   border;
-    border = XFixesCreateRegionFromWindow (w->dpy, c->frame, WindowRegionBounding );
+    border = XFixesCreateRegionFromWindow (w->dpy, 
+					   c->frame, 
+					   WindowRegionBounding );
     /* translate this */
     XFixesTranslateRegion (w->dpy, border, x, y);
     return border;
@@ -661,7 +671,8 @@ comp_engine_theme_init(Wm *w)
 
   w->black_picture 
     = XRenderCreatePicture (w->dpy, blackPixmap,
-			    XRenderFindStandardFormat (w->dpy, PictStandardARGB32),
+			    XRenderFindStandardFormat (w->dpy, 
+						       PictStandardARGB32),
 			    CPRepeat,
 			    &pa);
 
@@ -685,7 +696,8 @@ comp_engine_theme_init(Wm *w)
 
   w->red_picture 
     = XRenderCreatePicture (w->dpy, redPixmap,
-			    XRenderFindStandardFormat (w->dpy, PictStandardARGB32),
+			    XRenderFindStandardFormat (w->dpy, 
+						       PictStandardARGB32),
 			    CPRepeat,
 			    &pa);
 
@@ -699,7 +711,8 @@ comp_engine_theme_init(Wm *w)
   lowlightPixmap = XCreatePixmap (w->dpy, w->root, 1, 1, 32);
   w->lowlight_picture 
     = XRenderCreatePicture (w->dpy, lowlightPixmap,
-			    XRenderFindStandardFormat (w->dpy, PictStandardARGB32),
+			    XRenderFindStandardFormat (w->dpy, 
+						       PictStandardARGB32),
 			    CPRepeat,
 			    &pa);
 
@@ -855,11 +868,12 @@ comp_engine_init (Wm *w)
   pa.subwindow_mode = IncludeInferiors;
 
   w->root_picture 
-    = XRenderCreatePicture (w->dpy, w->root, 
-			    XRenderFindVisualFormat (w->dpy,
-						     DefaultVisual (w->dpy, w->screen)),
-			    CPSubwindowMode,
-			    &pa);
+    = XRenderCreatePicture(w->dpy, w->root, 
+			   XRenderFindVisualFormat (w->dpy,
+						    DefaultVisual (w->dpy, 
+								   w->screen)),
+			   CPSubwindowMode,
+			   &pa);
   
   w->all_damage = None;
   
@@ -1285,10 +1299,12 @@ comp_engine_render(Wm *w, XserverRegion region)
 					 w->dpy_width, w->dpy_height,
 					 DefaultDepth (w->dpy, w->screen));
 
-      w->root_buffer = XRenderCreatePicture (w->dpy, rootPixmap,
-					     XRenderFindVisualFormat (w->dpy,
-								      DefaultVisual (w->dpy, w->screen)),
-					     0, 0);
+      w->root_buffer 
+	= XRenderCreatePicture(w->dpy, rootPixmap,
+			       XRenderFindVisualFormat (w->dpy,
+							DefaultVisual (w->dpy,
+								       w->screen)),
+				0, 0);
 
       XRenderComposite (w->dpy, PictOpSrc, w->black_picture, 
       			None, w->root_buffer, 0, 0, 0, 0, 0, 0, 
@@ -1405,7 +1421,7 @@ comp_engine_render(Wm *w, XserverRegion region)
 
 		  /* now paint them */
 
-		  if (t->is_argb32 )
+		  if (t->is_argb32)
 		    {
 		      XRenderComposite (w->dpy, PictOpOver, 
 					w->black_picture,

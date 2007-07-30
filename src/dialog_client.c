@@ -1048,8 +1048,31 @@ dialog_client_button_press(Client *c, XButtonEvent *e)
 	    if (e->window != c->frames_decor[NORTH])
 	      return;
 #ifdef USE_COMPOSITE
+	    {
+	      XRenderColor    col;
 
+	      /* FIXME:  
+	       *  Need an actual set_transparency method and likely a 	 
+	       *  trans_picture per-client.
+	      */
 
+	      c->transparency = 0x3333;
+
+	      col.red = col.green = col.blue = 0;
+	      col.alpha = c->transparency; 
+
+	      XRenderFillRectangle (w->dpy, PictOpSrc, w->trans_picture, 
+				    &col, 0, 0, 1, 1);
+
+	      comp_engine_client_show (w, c);
+	      comp_engine_client_repair (w, c);
+	      comp_engine_render(w, w->all_damage);
+	      dialog_client_drag(c);;
+	      c->transparency = -1;
+	      comp_engine_client_show (w, c);
+	      comp_engine_client_repair (w, c);
+	      comp_engine_render(w, w->all_damage);
+	    }
 #else	    
 	    XUnmapWindow(w->dpy, c->frame);
 
