@@ -982,7 +982,7 @@ comp_engine_client_show(Wm *w, Client *client)
 				&pa);
 
       if ((client->type == MBCLIENT_TYPE_DIALOG 
-	  || client->type == MBCLIENT_TYPE_OVERRIDE)
+	  && (client->flags & CLIENT_HAS_URGENCY_FLAG))
 	  && client->timeline == NULL)
 	{
 	  client->timeline = mb_timeline_new (5,  

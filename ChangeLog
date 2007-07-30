@@ -1,5 +1,10 @@
 2007-07-30  Matthew Allum  <mallum@openedhand.com>
 
+	* src/composite/composite-engine.c: (comp_engine_client_show):
+	Fade in only for 'infoprints' - WM_WINDOW_TYPE_NOTIFICATION's
+
+2007-07-30  Matthew Allum  <mallum@openedhand.com>
+
 	* src/composite/composite-engine.c:
 	Misc cleanups
 	* src/dialog_client.c:
