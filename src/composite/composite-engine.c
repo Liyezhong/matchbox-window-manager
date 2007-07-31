@@ -1129,6 +1129,8 @@ comp_engine_client_configure(Wm *w, Client *client)
 
   if (client->named_pixmap)	
     {
+      XRenderPictureAttributes pa;
+
       XFreePixmap (w->dpy, client->named_pixmap);
       client->named_pixmap = None;
       
@@ -1137,6 +1139,20 @@ comp_engine_client_configure(Wm *w, Client *client)
 	  XRenderFreePicture (w->dpy, client->picture);
 	  client->picture = None;
 	}
+
+      pa.subwindow_mode = IncludeInferiors;
+
+      /* Now recreate for new size */
+      client->named_pixmap 
+	= XCompositeNameWindowPixmap (w->dpy, client->frame);
+
+      client->picture 
+	= XRenderCreatePicture (w->dpy, 
+				client->named_pixmap,
+				XRenderFindVisualFormat (w->dpy, 
+							 client->visual),
+				CPSubwindowMode,
+				&pa);
     }
 
   damage = XFixesCreateRegion (w->dpy, 0, 0);

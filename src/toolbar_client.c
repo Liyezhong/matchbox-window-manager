@@ -112,6 +112,8 @@ toolbar_client_move_resize(Client *c)
 			     0, c->width + max_offset , min_offset );
        }
    }      
+
+  comp_engine_client_configure (w, c);
 }
 
 void
@@ -130,7 +132,9 @@ toolbar_client_reparent(Client *c)
   c->frame =
     XCreateWindow(w->dpy, w->root, 0, c->y,
 		  w->dpy_width, c->height, 0,
-		  CopyFromParent, CopyFromParent, CopyFromParent,
+		  CopyFromParent, 
+		  CopyFromParent, 
+		  CopyFromParent,
 		  CWOverrideRedirect|CWEventMask|CWBackPixel,
 		  &attr);
   
@@ -204,8 +208,6 @@ toolbar_client_show(Client *c)
 
    XMapSubwindows(w->dpy, c->frame);
    XMapWindow(w->dpy, c->frame);
-
-   comp_engine_client_show(w, c);
 }
 
 void
@@ -355,8 +357,6 @@ toolbar_client_redraw(Client *c, Bool use_cache)
 						 FRAME_UTILITY_MAX);
   int min_offset = theme_frame_defined_height_get(w->mbtheme, 
 						  FRAME_UTILITY_MIN);
-
-  comp_engine_client_show(w, c);
 
   if (c->flags & CLIENT_TITLE_HIDDEN_FLAG) return;
 

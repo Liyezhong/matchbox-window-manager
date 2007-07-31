@@ -179,6 +179,7 @@ dialog_client_move_resize(Client *c)
 			 0, 0, w->dpy_width, w->dpy_height);
      }
 
+   comp_engine_client_configure (w, c);
 }
 
 int

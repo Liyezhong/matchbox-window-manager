@@ -202,6 +202,8 @@ toolbar_client_move_resize(Client *c)
 
   XResizeWindow(w->dpy, c->window, c->width, c->height);
   XMoveResizeWindow(w->dpy, c->frame, c->x, c->y, c->width, c->height );
+
+  comp_engine_client_configure (w, c);
 }
 
 void
