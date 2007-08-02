@@ -926,6 +926,8 @@ main_client_unmap(Client *c)
 
    XUnmapWindow(w->dpy, c->frame); 
 
+   comp_engine_client_hide(w, c);
+
    if (c == w->focused_client)
      w->focused_client = NULL;
 
