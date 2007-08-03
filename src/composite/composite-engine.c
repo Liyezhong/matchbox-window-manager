@@ -958,7 +958,7 @@ comp_engine_client_show(Wm *w, Client *client)
 
   if (!w->have_comp_engine) return;
 
-  dbg("%s() called\n", __func__);
+  dbg("%s() called for %s\n", __func__, client->name);
 
   /* 
    *  Destroying / Recreating the client pictures should hopefully save

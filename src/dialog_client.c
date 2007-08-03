@@ -108,7 +108,8 @@ dialog_client_check_for_state_hints(Client *c)
       /* Call comp_engine_client_show to add damage to main window
        * so it gets fully lowlighted ok.
        */
-      if ((damaged_client = wm_get_visible_main_client(c->wm)) != NULL)
+      if (c->wm->config->dialog_shade &&
+	  (damaged_client = wm_get_visible_main_client(c->wm)) != NULL)
         {
           comp_engine_client_show(c->wm, damaged_client);
         }

@@ -1,3 +1,10 @@
+2007-08-03  Matthew Allum  <mallum@openedhand.com>
+
+	* src/composite/composite-engine.c: (comp_engine_client_show):
+	Add slightly more debug info
+	* src/dialog_client.c: (dialog_client_check_for_state_hints):
+	Dont completely damage parent window if lowlighting not enabled.
+
 2007-08-02  Matthew Allum  <mallum@openedhand.com>
 
 	* src/main_client.c: (main_client_unmap):
