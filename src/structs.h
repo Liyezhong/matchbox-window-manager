@@ -1,4 +1,4 @@
-/* 
+/*
  *  Matchbox Window Manager - A lightweight window manager not for the
  *                            desktop.
  *
@@ -130,7 +130,7 @@
 
 /* Shadow defaults, only used with composite */
 
-#define SHADOW_RADIUS 6
+#define SHADOW_RADIUS 60
 #define SHADOW_OPACITY	0.75
 #define SHADOW_OFFSET_X	(-SHADOW_RADIUS)
 #define SHADOW_OFFSET_Y	(-SHADOW_RADIUS)
@@ -237,8 +237,8 @@ enum {
 
 /* Client window types */
 
-typedef enum 
-{ 
+typedef enum
+{
   MBCLIENT_TYPE_DIALOG    = (1<<1),
   MBCLIENT_TYPE_TOOLBAR   = (1<<2),
   MBCLIENT_TYPE_PANEL     = (1<<3),
@@ -288,7 +288,7 @@ typedef struct _mb_client_button
 #define CLIENT_IS_MODAL_FLAG      (1<<11)
 #define CLIENT_BORDERS_ONLY_FLAG  (1<<12)
 #define CLIENT_IS_MESSAGE_DIALOG  (1<<14)
-#define CLIENT_IS_DESKTOP_FLAG    (1<<15) /* Used in 'borked' desktop win 
+#define CLIENT_IS_DESKTOP_FLAG    (1<<15) /* Used in 'borked' desktop win
 					     Handling mode :/ */
 #define CLIENT_NEW_FOR_DESKTOP    (1<<16)
 #define CLIENT_DOCK_TITLEBAR   (1<<17)
@@ -348,7 +348,7 @@ typedef struct _client
 #endif
 
   Bool              name_is_utf8;
-  char             *bin_name; 	
+  char             *bin_name;
   unsigned char    *startup_id;
   Window	    window;
 
@@ -375,7 +375,7 @@ typedef struct _client
   Pixmap            backing_masks[MSK_COUNT];
 
   Bool              have_cache, have_set_bg;
-  struct list_item *buttons; 
+  struct list_item *buttons;
 
   /* InputOnly modal 'blocker' win */
 
@@ -407,7 +407,7 @@ typedef struct _client
 #endif
 
   /* References */
-   
+
   struct _wm       *wm;
 
   /* New */
@@ -416,7 +416,7 @@ typedef struct _client
   struct _client   *next_focused_client;
 
   /* Client methods */
-  
+
   void (* reparent)( struct _client* c );
   void (* redraw)( struct _client* c, Bool use_cache );
   void (* button_press) (struct _client *c, XButtonEvent *e);
@@ -431,13 +431,13 @@ typedef struct _client
   /* new */
   void (* raise)( struct _client* c );
   void (* unmap)( struct _client* c );
-   
+
 } Client;
 
 
 /***
 
-  Window Manager Instance Structs 
+  Window Manager Instance Structs
 
 ***/
 
@@ -446,7 +446,7 @@ typedef struct _client
 enum {
   KEY_ACTN_EXEC = 1,
   KEY_ACTN_EXEC_SINGLE,
-  KEY_ACTN_EXEC_SN, 	
+  KEY_ACTN_EXEC_SN,
   KEY_ACTN_NEXT_CLIENT,
   KEY_ACTN_PREV_CLIENT,
   KEY_ACTN_CLOSE_CLIENT,
@@ -473,7 +473,7 @@ typedef struct _kbdconfig
 {
   struct _kbdconfig_entry *entrys;
 
-  int MetaMask, HyperMask, SuperMask, AltMask, 
+  int MetaMask, HyperMask, SuperMask, AltMask,
     ModeMask, NumLockMask, ScrollLockMask, lock_mask;
 
 } MBConfigKbd;
@@ -496,7 +496,7 @@ typedef struct _wm_config
   int          dialog_stratergy;
 
   Bool         super_modal;
-  Bool         dialog_shade; 
+  Bool         dialog_shade;
   int          lowlight_params[4];
 
 #ifdef USE_COMPOSITE
@@ -509,12 +509,12 @@ typedef struct _wm_config
   unsigned char shadow_color[4];
 
 #endif
-   
+
   Time         dbl_click_time;
   int          use_icons;
   char        *ping_handler;
   Bool         ping_aggressive;
-  
+
   MBConfigKbd *kb;
   char        *kbd_conf_file;
 
@@ -526,7 +526,7 @@ typedef struct _wm_config
 /* Queue like structs for startup notification and msg win compile opts  */
 
 #ifdef USE_LIBSN
-typedef struct _sncycles 
+typedef struct _sncycles
 {
   char             *bin_name;
   Window            xid;
@@ -555,7 +555,7 @@ typedef struct _sn_execmapping_item
 #define DEBUG_COMPOSITE_VISIBLE_FLAG (1<<9)
 #endif
 
-typedef struct list_item MBList; 
+typedef struct list_item MBList;
 
 /* Main WM struct  */
 
@@ -578,8 +578,8 @@ typedef struct _wm
   /* Stack stuff */
 
   Client           *stack_top, *stack_bottom;
-  int               stack_n_items;     
-  Client           *stack_top_app; 
+  int               stack_n_items;
+  Client           *stack_top_app;
   Client           *client_desktop;
 
   MBList           *client_age_list; /* List of clients ordered by age */
@@ -588,7 +588,7 @@ typedef struct _wm
 
   /*******************/
 
-  Wm_config        *config;  
+  Wm_config        *config;
 
   Window            last_click_window;
   Time              last_click_time;
@@ -599,7 +599,7 @@ typedef struct _wm
   Cursor            curs, curs_busy, curs_drag, blank_curs;
 
   struct _mbtheme  *mbtheme;
-  Pixmap            generic_icon, generic_icon_mask; 
+  Pixmap            generic_icon, generic_icon_mask;
 
   Client           *have_titlebar_panel;
   XColor            grey_col; 	/* Used for window backgrounds.*/
@@ -622,12 +622,12 @@ typedef struct _wm
 
 #ifdef USE_XSETTINGS
   XSettingsClient  *xsettings_client;
-#endif 
+#endif
 
 #ifdef USE_GCONF
   GConfClient      *gconf_client;
   GMainContext     *gconf_context;
-#endif 
+#endif
 
 #ifdef USE_COMPOSITE
   Bool              have_comp_engine;
@@ -673,7 +673,7 @@ typedef struct _wm
 #endif
 
 #if USE_SM
-  int               sm_ice_fd;      
+  int               sm_ice_fd;
   IceConn           ice_conn;
 #endif
 
@@ -704,7 +704,7 @@ typedef struct MBPangoFont
 
 /***
 
-  Various enums used by all, mainly for themeing. 
+  Various enums used by all, mainly for themeing.
 
 ***/
 
@@ -716,13 +716,13 @@ enum {
   SHADOW_STYLE_GAUSSIAN
 };
 
-typedef enum 
-{ 
-  ALIGN_LEFT, 
-  ALIGN_CENTER, 
-  ALIGN_RIGHT 
+typedef enum
+{
+  ALIGN_LEFT,
+  ALIGN_CENTER,
+  ALIGN_RIGHT
 
-} Alignment;  
+} Alignment;
 
 enum {
   BUTTON_ACTION_CLOSE = 1,
